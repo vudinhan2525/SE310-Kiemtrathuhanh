@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="box-border">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MVCApp</title>
+    <link rel="stylesheet" href="~/css/output.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MVCApp.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <div class="fixed flex top-0 right-0 left-0 h-[70px]  px-24 py-3 border-b-[1px] bg-white z-[99]">
+            <div class="flex justify-between items-center w-full">
+                <div class="">
+                    <a href="/" class="px-4 py-2 rounded-md text-lg !text-black hover:bg-gray-100 transition-all cursor-pointer">Home</a>
+                    <a href="/stat" class="px-4 py-2 rounded-md text-lg !text-black hover:bg-gray-100 transition-all cursor-pointer">Statistics</a>
+                </div>
+                <div class="flex items-center">
+                    <button id="login-modal-btn" class="px-4 py-2 rounded-md text-lg !text-black hover:bg-gray-100 transition-all cursor-pointer" onclick="toggleModal('login-modal')">Login</button>
+                    <button id="register-modal-btn" class="px-4 py-2 rounded-md text-lg !text-black hover:bg-gray-100 transition-all cursor-pointer" onclick="toggleModal('register-modal')">Register</button>
+                    <span id="greeting-message" class="hidden px-4 py-2 rounded-md text-lg !text-black"></span>
+                    <button id="logout-btn" class="px-4 py-2 hidden rounded-md text-lg !text-black hover:bg-gray-100 transition-all cursor-pointer">Logout</button>
+                </div>
+            </div>
+
+        </div>
+        
+    </header>
+    <div class=" w-full mt-[90px]">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed flex justify-center items-center inset-0 m-auto my-auto bg-black bg-opacity-50 hidden">
+        <div class="w-[400px] p-5 bg-white rounded-lg shadow-lg">
+            <h2 class="text-lg font-bold mb-4">Login</h2>
+            <form>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email1" name="email" class="mt-1 px-2 py-2  border-[1px] block w-full rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password1" name="password" class="mt-1 px-2 py-2  border-[1px] block w-full rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Register Modal -->
+    <div id="register-modal" class="fixed flex justify-center items-center inset-0 m-auto my-auto bg-black bg-opacity-50 hidden">
+        <div class="w-[400px] p-5 bg-white rounded-lg shadow-lg">
+            <h2 class="text-lg font-bold mb-4">Register</h2>
+            <form>
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" id="name" name="name" class="px-2 py-2 border-[1px] mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" name="email" class="px-2 py-2 border-[1px] mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" class="px-2 py-2 border-[1px] mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+   <script>
+         document.addEventListener("DOMContentLoaded", function () {
+        const logoutButton = document.getElementById("logout-btn");
+
+        if (logoutButton) {
+            logoutButton.addEventListener("click", function () {
+                localStorage.removeItem("greetingData");
+                location.reload();
+            });
+        }
+        });
+        window.addEventListener("load", function () {
+        const greetingData = JSON.parse(localStorage.getItem("greetingData"));
+        if (greetingData && greetingData.expiresAt > new Date().getTime()) {
+            document.getElementById("login-modal-btn").classList.add("hidden");
+            document.getElementById("register-modal-btn").classList.add("hidden");
+            document.getElementById("logout-btn").classList.remove("hidden");
+            const greetingMessage = document.getElementById("greeting-message");
+            greetingMessage.textContent = `Hello, ${greetingData.name}!`;
+            greetingMessage.classList.remove("hidden");
+        } else {
+            localStorage.removeItem("greetingData");
+        }
+    });
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.toggle('hidden');
+            }
+        }      
+        window.onclick = function(event) {
+            const loginModal = document.getElementById('login-modal');
+            const registerModal = document.getElementById('register-modal');
+            if (event.target === loginModal) {
+                toggleModal('login-modal');
+            } else if (event.target === registerModal) {
+                toggleModal('register-modal');
+            }
+        }
+        document.querySelector('#register-modal form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const name = document.querySelector('#register-modal #name').value;
+        const email = document.querySelector('#register-modal #email').value;
+        const password = document.querySelector('#register-modal #password').value;
+
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Name: name, Email: email, Password: password })
+            });
+
+            if (response.ok) {
+                const result = await response.text();
+                alert(result);
+                toggleModal('register-modal'); 
+            } else {
+                alert('Registration failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error during registration.');
+        }});
+        document.querySelector("#login-modal form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById("email1").value;
+            const password = document.getElementById("password1").value;
+
+            const response = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ Email: email, Password: password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                toggleModal('login-modal');
+                document.getElementById("login-modal-btn").classList.add("hidden");
+                document.getElementById("register-modal-btn").classList.add("hidden");
+                document.getElementById("logout-btn").classList.remove("hidden");
+
+                const greetingMessage = document.getElementById("greeting-message");
+                greetingMessage.textContent = `Hello, ${data.name}!`;
+                greetingMessage.classList.remove("hidden");
+                const expirationTime = new Date().getTime() + 60 * 60 * 1000;
+                localStorage.setItem("greetingData", JSON.stringify({ name: data.name, expiresAt: expirationTime }));
+            } else {
+                alert(await response.text()); 
+            }
+        }); 
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,71 @@
+@model List<MVCApp.Models.Food>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="px-12 py-8">
+    <h2 class="text-3xl font-bold">Admin Dashboard</h2>
+
+    <div class="grid grid-cols-2 gap-8 mt-5">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold">Total Foods</h3>
+            <p class="text-2xl">@Model.Count</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold">Total Users</h3>
+            <p class="text-2xl">@ViewBag.UserCount</p>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <h3 class="text-2xl font-semibold">Food Item Left Chart</h3>
+        <canvas id="itemLeftChart" class="mt-4"></canvas>
+        <h3 class="text-2xl font-semibold">Food Price Chart</h3>
+        <canvas id="priceChart" class="mt-4"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const itemLeftCtx = document.getElementById('itemLeftChart').getContext('2d');
+    const priceCtx = document.getElementById('priceChart').getContext('2d');
+    const itemLeftChart = new Chart(itemLeftCtx, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.Select(f => f.Name))), 
+            datasets: [{
+                label: 'Item Left',
+                data: @Html.Raw(Json.Serialize(Model.Select(f => f.ItemLeft))),
+                backgroundColor: 'blue',
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+            },
+        },
+    });
+    const priceChart = new Chart(priceCtx, {
+        type: 'pie',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.Select(f => f.Name))), 
+            datasets: [{
+                label: 'Price',
+                data: @Html.Raw(Json.Serialize(Model.Select(f => f.Price))),
+                backgroundColor: ['red', 'blue', 'green', 'orange'], 
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+            },
+        },
+    });
+</script>
